@@ -1,0 +1,219 @@
+/* Custom CSS for DummyBank */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.section {
+    min-height: 400px;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.account-card {
+    border-left: 4px solid #0d6efd;
+}
+
+.savings-account {
+    border-left-color: #198754;
+}
+
+.current-account {
+    border-left-color: #fd7e14;
+}
+
+.balance-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #198754;
+}
+
+.transaction-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.3s ease;
+}
+
+.transaction-item:hover {
+    background-color: #f8f9fa;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-amount.credit {
+    color: #198754;
+}
+
+.transaction-amount.debit {
+    color: #dc3545;
+}
+
+.investment-card {
+    border-left: 4px solid #6f42c1;
+}
+
+.fd-card {
+    border-left-color: #20c997;
+}
+
+.rd-card {
+    border-left-color: #fd7e14;
+}
+
+.status-badge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+/* Loading spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 1rem !important;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Custom utilities */
+.text-muted {
+    color: #6c757d !important;
+}
+
+.fs-7 {
+    font-size: 0.875rem;
+}
+
+.border-start-primary {
+    border-left: 3px solid #0d6efd !important;
+}
+
+.border-start-success {
+    border-left: 3px solid #198754 !important;
+}
+
+.border-start-warning {
+    border-left: 3px solid #ffc107 !important;
+}
+
+.border-start-info {
+    border-left: 3px solid #0dcaf0 !important;
+}

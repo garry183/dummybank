@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DummyBank - Your Test Banking Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-university"></i> DummyBank</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item" id="nav-home">
+                        <a class="nav-link" href="#" onclick="showSection('home')">Home</a>
+                    </li>
+                    <li class="nav-item" id="nav-dashboard" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showSection('dashboard')">Dashboard</a>
+                    </li>
+                    <li class="nav-item" id="nav-accounts" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showSection('accounts')">Accounts</a>
+                    </li>
+                    <li class="nav-item" id="nav-transfer" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showSection('transfer')">Transfer</a>
+                    </li>
+                    <li class="nav-item" id="nav-investments" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showSection('investments')">Investments</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item" id="nav-login">
+                        <a class="nav-link" href="#" onclick="showSection('login')">Login</a>
+                    </li>
+                    <li class="nav-item" id="nav-signup">
+                        <a class="nav-link" href="#" onclick="showSection('signup')">Sign Up</a>
+                    </li>
+                    <li class="nav-item" id="nav-logout" style="display: none;">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                    <li class="nav-item" id="nav-username" style="display: none;">
+                        <span class="navbar-text" id="username-display"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Home Section -->
+        <div id="home-section" class="section">
+            <div class="hero-section text-center py-5">
+                <h1 class="display-4">Welcome to DummyBank</h1>
+                <p class="lead">Your trusted partner for test automation banking solutions</p>
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                                <h5>Secure Banking</h5>
+                                <p>Experience secure and reliable banking services for your testing needs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>
+                                <h5>Easy Access</h5>
+                                <p>Access your accounts anytime, anywhere with our user-friendly interface.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                                <h5>Investment Options</h5>
+                                <p>Grow your money with our Fixed Deposits and Recurring Deposits.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Section -->
+        <div id="signup-section" class="section" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="fas fa-user-plus"></i> Sign Up</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="signup-form">
+                                <div class="mb-3">
+                                    <label for="signup-name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="signup-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="signup-phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="signup-phone" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="signup-email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="signup-email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="signup-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="signup-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login-section" class="section" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="fas fa-sign-in-alt"></i> Login</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="login-form">
+                                <div class="mb-3">
+                                    <label for="login-name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="login-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="login-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="login-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="section" style="display: none;">
+            <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-outline-primary me-2 mb-2" onclick="showSection('accounts')">
+                                <i class="fas fa-university"></i> Manage Accounts
+                            </button>
+                            <button class="btn btn-outline-success me-2 mb-2" onclick="showAddMoneyModal()">
+                                <i class="fas fa-plus-circle"></i> Add Money
+                            </button>
+                            <button class="btn btn-outline-info me-2 mb-2" onclick="showSection('transfer')">
+                                <i class="fas fa-exchange-alt"></i> Transfer Money
+                            </button>
+                            <button class="btn btn-outline-warning me-2 mb-2" onclick="showWithdrawModal()">
+                                <i class="fas fa-minus-circle"></i> Withdraw Money
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Account Summary</h5>
+                        </div>
+                        <div class="card-body" id="account-summary">
+                            <!-- Account summary will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accounts Section -->
+        <div id="accounts-section" class="section" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fas fa-university"></i> My Accounts</h2>
+                <button class="btn btn-primary" onclick="showCreateAccountModal()">
+                    <i class="fas fa-plus"></i> Open New Account
+                </button>
+            </div>
+            <div id="accounts-list">
+                <!-- Accounts will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Transfer Section -->
+        <div id="transfer-section" class="section" style="display: none;">
+            <h2><i class="fas fa-exchange-alt"></i> Transfer Money</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="transfer-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="from-account" class="form-label">From Account</label>
+                                            <select class="form-select" id="from-account" required>
+                                                <!-- Options populated by JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="to-account" class="form-label">To Account</label>
+                                            <select class="form-select" id="to-account" required>
+                                                <!-- Options populated by JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="transfer-amount" class="form-label">Amount</label>
+                                    <input type="number" class="form-control" id="transfer-amount" min="1" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="transfer-note" class="form-label">Note (Optional)</label>
+                                    <input type="text" class="form-control" id="transfer-note">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Transfer Money</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investments Section -->
+        <div id="investments-section" class="section" style="display: none;">
+            <h2><i class="fas fa-chart-line"></i> Investments</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-piggy-bank"></i> Fixed Deposits</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Secure your money with guaranteed returns</p>
+                            <button class="btn btn-primary" onclick="showFDModal()">Open FD</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-calendar-check"></i> Recurring Deposits</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Save regularly and earn better returns</p>
+                            <button class="btn btn-primary" onclick="showRDModal()">Open RD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>My Investments</h5>
+                        </div>
+                        <div class="card-body" id="investments-list">
+                            <!-- Investments will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Account Modal -->
+    <div class="modal fade" id="createAccountModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-university"></i> Open New Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-account-form">
+                        <div class="mb-3">
+                            <label class="form-label">Account Type</label>
+                            <div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="accountType" id="modal-savings" value="savings" checked>
+                                    <label class="form-check-label" for="modal-savings">
+                                        <i class="fas fa-piggy-bank text-success"></i> Savings Account
+                                        <div class="text-muted fs-7">Earn interest on your savings</div>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="accountType" id="modal-current" value="current">
+                                    <label class="form-check-label" for="modal-current">
+                                        <i class="fas fa-briefcase text-warning"></i> Current Account
+                                        <div class="text-muted fs-7">For business transactions</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-initial-deposit" class="form-label">Initial Deposit</label>
+                            <input type="number" class="form-control" id="modal-initial-deposit" min="0" value="0">
+                            <div class="form-text">Minimum ₹0 for demo purposes</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createAccount()">Create Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Money Modal -->
+    <div class="modal fade" id="addMoneyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Add Money</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-add-money-form">
+                        <div class="mb-3">
+                            <label for="modal-add-money-account" class="form-label">Select Account</label>
+                            <select class="form-select" id="modal-add-money-account" required>
+                                <!-- Options populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-add-money-amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="modal-add-money-amount" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-add-money-note" class="form-label">Note (Optional)</label>
+                            <input type="text" class="form-control" id="modal-add-money-note" placeholder="e.g., Cash deposit, Salary, etc.">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="addMoney()">Add Money</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Money Modal -->
+    <div class="modal fade" id="withdrawModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-minus-circle"></i> Withdraw Money</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-withdraw-form">
+                        <div class="mb-3">
+                            <label for="modal-withdraw-account" class="form-label">Select Account</label>
+                            <select class="form-select" id="modal-withdraw-account" required>
+                                <!-- Options populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-withdraw-amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="modal-withdraw-amount" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-withdraw-note" class="form-label">Note (Optional)</label>
+                            <input type="text" class="form-control" id="modal-withdraw-note" placeholder="e.g., ATM withdrawal, Cash withdrawal, etc.">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" onclick="withdrawMoney()">Withdraw Money</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Deposit Modal -->
+    <div class="modal fade" id="fdModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-piggy-bank"></i> Open Fixed Deposit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-fd-form">
+                        <div class="mb-3">
+                            <label for="modal-fd-account" class="form-label">Source Account</label>
+                            <select class="form-select" id="modal-fd-account" required>
+                                <!-- Options populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-fd-amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="modal-fd-amount" min="1000" required>
+                            <div class="form-text">Minimum ₹1,000</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-fd-tenure" class="form-label">Tenure</label>
+                            <select class="form-select" id="modal-fd-tenure" required>
+                                <option value="">Select Tenure</option>
+                                <option value="6">6 Months (5% interest)</option>
+                                <option value="12">1 Year (6% interest)</option>
+                                <option value="24">2 Years (7% interest)</option>
+                                <option value="36">3 Years (8% interest)</option>
+                                <option value="60">5 Years (9% interest)</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="openFD()">Open FD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recurring Deposit Modal -->
+    <div class="modal fade" id="rdModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-calendar-check"></i> Open Recurring Deposit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modal-rd-form">
+                        <div class="mb-3">
+                            <label for="modal-rd-account" class="form-label">Source Account</label>
+                            <select class="form-select" id="modal-rd-account" required>
+                                <!-- Options populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-rd-amount" class="form-label">Monthly Amount</label>
+                            <input type="number" class="form-control" id="modal-rd-amount" min="500" required>
+                            <div class="form-text">Minimum ₹500 per month</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-rd-tenure" class="form-label">Tenure</label>
+                            <select class="form-select" id="modal-rd-tenure" required>
+                                <option value="">Select Tenure</option>
+                                <option value="12">1 Year (6.5% interest)</option>
+                                <option value="24">2 Years (7.5% interest)</option>
+                                <option value="36">3 Years (8.5% interest)</option>
+                                <option value="60">5 Years (9.5% interest)</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="openRD()">Open RD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div class="modal fade" id="transactionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-history"></i> Transaction History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="transaction-history-content">
+                    <!-- Content populated by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
