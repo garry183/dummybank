@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Withdraw Money - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-dash-circle text-warning"></i> Withdraw Money
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Withdraw money from your account. Please enter your password to complete the transaction.
+                    </p>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">
+                                <i class="bi bi-cash-coin"></i> Withdrawal Amount *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="amount" 
+                                       name="amount" 
+                                       placeholder="0.00" 
+                                       min="0.01" 
+                                       step="0.01" 
+                                       required
+                                       value="{{ request.form.get('amount', '') }}">
+                            </div>
+                            <div class="form-text">Enter the amount you want to withdraw</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-text-left"></i> Description (Optional)
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="description" 
+                                   name="description" 
+                                   placeholder="e.g., ATM withdrawal, Cash for shopping, etc."
+                                   maxlength="100"
+                                   value="{{ request.form.get('description', '') }}">
+                            <div class="form-text">Add a note to remember this transaction</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-lock"></i> Password *
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter your account password" 
+                                   required>
+                            <div class="form-text">Required to authorize the withdrawal</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-check-circle"></i> Complete Withdrawal
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Warning and Information Card -->
+            <div class="card mt-4 border-warning">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-exclamation-triangle text-warning"></i> Withdrawal Information
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-info-circle"></i> Withdrawals are processed immediately
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-info-circle"></i> Ensure you have sufficient funds in your account
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-info-circle"></i> All transactions are recorded in your history
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-info-circle"></i> Minimum withdrawal amount is $0.01
+                        </li>
+                        <li class="small text-warning">
+                            <i class="bi bi-shield-exclamation"></i> Your password is required for security
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Format amount input and add validation feedback
+    document.getElementById('amount').addEventListener('input', function() {
+        let value = parseFloat(this.value);
+        if (!isNaN(value) && value > 0) {
+            // Optional: Add visual feedback for valid amount
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value !== '') {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+    
+    // Focus on amount field when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('amount').focus();
+    });
+    
+    // Add confirmation for large withdrawals
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const amount = parseFloat(document.getElementById('amount').value);
+        if (amount > 1000) {
+            if (!confirm(`Are you sure you want to withdraw $${amount.toFixed(2)}? This is a large withdrawal.`)) {
+                e.preventDefault();
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="card-title">
+                        <i class="bi bi-person-circle text-primary"></i>
+                        Welcome, {{ account_name }}!
+                    </h1>
+                    <p class="card-text text-muted">
+                        Account Number: <strong>{{ account_number }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group-banking row">
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#balanceModal">
+                                <i class="bi bi-wallet2"></i><br>
+                                Check Balance
+                            </button>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <a href="{{ url_for('deposit') }}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-plus-circle"></i><br>
+                                Deposit Money
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <a href="{{ url_for('withdraw') }}" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-dash-circle"></i><br>
+                                Withdraw Money
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <a href="{{ url_for('transfer') }}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-arrow-left-right"></i><br>
+                                Transfer Money
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong><i class="bi bi-credit-card text-primary"></i> Account Number:</strong><br>
+                            <span class="text-monospace">{{ account_number }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <strong><i class="bi bi-person text-success"></i> Account Holder:</strong><br>
+                            {{ account_name }}
+                        </li>
+                        <li class="mb-2">
+                            <strong><i class="bi bi-shield-check text-info"></i> Account Status:</strong><br>
+                            <span class="badge bg-success">Active</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-3">
+                        <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#historyModal">
+                            <i class="bi bi-clock-history"></i> View Transaction History
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> Account Services</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Available banking services:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Balance Inquiry</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Deposit Funds</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Withdraw Funds</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Transfer Between Accounts</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Transaction History</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Secure Account Management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Security Notice -->
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h6><i class="bi bi-shield-lock"></i> Security Notice</h6>
+                <p class="mb-0">
+                    For your security, you will be asked to enter your password when performing any 
+                    financial transactions (deposits, withdrawals, transfers) or viewing sensitive 
+                    information like account balance and transaction history.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Balance Modal -->
+<div class="modal fade" id="balanceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-wallet2"></i> Check Account Balance
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('check_balance') }}" method="POST">
+                <div class="modal-body">
+                    <p>Please enter your password to view your current account balance:</p>
+                    <div class="mb-3">
+                        <label for="balance_password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="balance_password" name="password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-eye"></i> Check Balance
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-clock-history"></i> Transaction History
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('history') }}" method="POST">
+                <div class="modal-body">
+                    <p>Please enter your password to view your transaction history:</p>
+                    <div class="mb-3">
+                        <label for="history_password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="history_password" name="password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-list"></i> View History
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

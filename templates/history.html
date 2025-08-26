@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction History - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-clock-history text-info"></i> Transaction History
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p class="text-muted mb-0">
+                            Showing {{ transactions|length }} of {{ total_transactions }} transactions
+                        </p>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    {% if transactions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Related Account</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for transaction in transactions %}
+                                        <tr class="transaction-row" data-type="{{ transaction.transaction_type }}">
+                                            <td>
+                                                <div class="fw-bold">{{ transaction.date }}</div>
+                                                <small class="text-muted">{{ transaction.timestamp.split('T')[1].split('.')[0] }}</small>
+                                            </td>
+                                            <td>
+                                                {% if transaction.transaction_type == 'deposit' %}
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-plus-circle"></i> Deposit
+                                                    </span>
+                                                {% elif transaction.transaction_type == 'withdrawal' %}
+                                                    <span class="badge bg-warning">
+                                                        <i class="bi bi-dash-circle"></i> Withdrawal
+                                                    </span>
+                                                {% elif transaction.transaction_type == 'transfer_in' %}
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-arrow-down-circle"></i> Transfer In
+                                                    </span>
+                                                {% elif transaction.transaction_type == 'transfer_out' %}
+                                                    <span class="badge bg-primary">
+                                                        <i class="bi bi-arrow-up-circle"></i> Transfer Out
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div>{{ transaction.description }}</div>
+                                                <small class="text-muted">ID: #{{ transaction.id }}</small>
+                                            </td>
+                                            <td>
+                                                {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'transfer_in' %}
+                                                    <span class="text-success fw-bold">+${{ "%.2f"|format(transaction.amount) }}</span>
+                                                {% else %}
+                                                    <span class="text-danger fw-bold">-${{ "%.2f"|format(transaction.amount) }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if transaction.related_account and transaction.related_account != transaction.account_number %}
+                                                    <span class="text-monospace">{{ transaction.related_account }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Summary Cards -->
+                        <div class="row mt-4">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </h5>
+                                        <h6 class="card-subtitle">Deposits</h6>
+                                        <p class="card-text">{{ transactions|selectattr('transaction_type', 'equalto', 'deposit')|list|length + transactions|selectattr('transaction_type', 'equalto', 'transfer_in')|list|length }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-dash-circle"></i>
+                                        </h5>
+                                        <h6 class="card-subtitle">Withdrawals</h6>
+                                        <p class="card-text">{{ transactions|selectattr('transaction_type', 'equalto', 'withdrawal')|list|length + transactions|selectattr('transaction_type', 'equalto', 'transfer_out')|list|length }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </h5>
+                                        <h6 class="card-subtitle">Transfers</h6>
+                                        <p class="card-text">{{ (transactions|selectattr('transaction_type', 'equalto', 'transfer_in')|list|length + transactions|selectattr('transaction_type', 'equalto', 'transfer_out')|list|length) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="card bg-secondary text-white">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-list"></i>
+                                        </h5>
+                                        <h6 class="card-subtitle">Total</h6>
+                                        <p class="card-text">{{ transactions|length }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">No Transactions Found</h5>
+                            <p class="text-muted">You haven't made any transactions yet.</p>
+                            <div class="mt-3">
+                                <a href="{{ url_for('deposit') }}" class="btn btn-success me-2">
+                                    <i class="bi bi-plus-circle"></i> Make a Deposit
+                                </a>
+                                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transaction-row {
+        transition: background-color 0.2s ease;
+    }
+    
+    .transaction-row:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .transaction-row[data-type="deposit"] {
+        border-left: 3px solid #198754;
+    }
+    
+    .transaction-row[data-type="withdrawal"] {
+        border-left: 3px solid #ffc107;
+    }
+    
+    .transaction-row[data-type="transfer_in"] {
+        border-left: 3px solid #0dcaf0;
+    }
+    
+    .transaction-row[data-type="transfer_out"] {
+        border-left: 3px solid #0d6efd;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+    
+    .card.bg-success,
+    .card.bg-warning,
+    .card.bg-info,
+    .card.bg-secondary {
+        transition: transform 0.2s ease;
+    }
+    
+    .card.bg-success:hover,
+    .card.bg-warning:hover,
+    .card.bg-info:hover,
+    .card.bg-secondary:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+    // Add click handlers for transaction rows
+    document.querySelectorAll('.transaction-row').forEach(row => {
+        row.addEventListener('click', function() {
+            // Optional: Add transaction detail modal or highlight
+            this.style.backgroundColor = '#e3f2fd';
+            setTimeout(() => {
+                this.style.backgroundColor = '';
+            }, 1000);
+        });
+    });
+    
+    // Optional: Add filter functionality
+    function filterTransactions(type) {
+        const rows = document.querySelectorAll('.transaction-row');
+        rows.forEach(row => {
+            if (type === 'all' || row.dataset.type === type) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

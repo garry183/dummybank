@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer Money - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-arrow-left-right text-primary"></i> Transfer Money
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Transfer money to another account. Please enter your password to complete the transaction.
+                    </p>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="to_account" class="form-label">
+                                <i class="bi bi-credit-card"></i> Destination Account Number *
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="to_account" 
+                                   name="to_account" 
+                                   placeholder="Enter recipient's account number" 
+                                   required
+                                   value="{{ request.form.get('to_account', '') }}">
+                            <div class="form-text">Account number of the person you want to send money to</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">
+                                <i class="bi bi-cash-coin"></i> Transfer Amount *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="amount" 
+                                       name="amount" 
+                                       placeholder="0.00" 
+                                       min="0.01" 
+                                       step="0.01" 
+                                       required
+                                       value="{{ request.form.get('amount', '') }}">
+                            </div>
+                            <div class="form-text">Enter the amount you want to transfer</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-text-left"></i> Description (Optional)
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="description" 
+                                   name="description" 
+                                   placeholder="e.g., Loan repayment, Gift, Bill payment, etc."
+                                   maxlength="100"
+                                   value="{{ request.form.get('description', '') }}">
+                            <div class="form-text">Add a note to remember this transaction</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-lock"></i> Your Password *
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter your account password" 
+                                   required>
+                            <div class="form-text">Required to authorize the transfer</div>
+                        </div>
+                        
+                        <!-- Transfer Summary -->
+                        <div class="card bg-light mb-4" id="transferSummary" style="display: none;">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-list-check"></i> Transfer Summary
+                                </h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li><strong>From:</strong> Your Account ({{ session.account_number }})</li>
+                                    <li><strong>To:</strong> <span id="summaryToAccount">-</span></li>
+                                    <li><strong>Amount:</strong> $<span id="summaryAmount">0.00</span></li>
+                                    <li><strong>Description:</strong> <span id="summaryDescription">-</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send"></i> Complete Transfer
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Important Information -->
+            <div class="card mt-4 border-info">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-info-circle text-info"></i> Transfer Information
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-check"></i> Transfers are processed immediately
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-check"></i> Both accounts will show the transaction in their history
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-check"></i> Minimum transfer amount is $0.01
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-exclamation-circle"></i> Ensure the recipient account number is correct
+                        </li>
+                        <li class="small text-warning">
+                            <i class="bi bi-shield-exclamation"></i> Your password is required for security
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update transfer summary when form fields change
+    function updateTransferSummary() {
+        const toAccount = document.getElementById('to_account').value;
+        const amount = document.getElementById('amount').value;
+        const description = document.getElementById('description').value || 'Web transfer';
+        
+        if (toAccount && amount && parseFloat(amount) > 0) {
+            document.getElementById('summaryToAccount').textContent = toAccount;
+            document.getElementById('summaryAmount').textContent = parseFloat(amount).toFixed(2);
+            document.getElementById('summaryDescription').textContent = description;
+            document.getElementById('transferSummary').style.display = 'block';
+        } else {
+            document.getElementById('transferSummary').style.display = 'none';
+        }
+    }
+    
+    // Add event listeners for form fields
+    document.getElementById('to_account').addEventListener('input', updateTransferSummary);
+    document.getElementById('amount').addEventListener('input', function() {
+        let value = parseFloat(this.value);
+        if (!isNaN(value) && value > 0) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value !== '') {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+        updateTransferSummary();
+    });
+    document.getElementById('description').addEventListener('input', updateTransferSummary);
+    
+    // Validate account number format
+    document.getElementById('to_account').addEventListener('input', function() {
+        const value = this.value.trim();
+        if (value.length === 10 && /^\d+$/.test(value)) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (value.length > 0) {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+    
+    // Prevent transferring to same account
+    document.getElementById('to_account').addEventListener('blur', function() {
+        if (this.value === '{{ session.account_number }}') {
+            this.classList.add('is-invalid');
+            this.setCustomValidity('Cannot transfer to your own account');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+    
+    // Focus on account field when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('to_account').focus();
+    });
+    
+    // Add confirmation for large transfers
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const amount = parseFloat(document.getElementById('amount').value);
+        const toAccount = document.getElementById('to_account').value;
+        
+        if (amount > 500) {
+            if (!confirm(`Are you sure you want to transfer $${amount.toFixed(2)} to account ${toAccount}? This is a large transfer.`)) {
+                e.preventDefault();
+            }
+        }
+    });
+</script>
+{% endblock %}

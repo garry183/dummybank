@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Deposit Money - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle text-success"></i> Deposit Money
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Add money to your account. Please enter your password to complete the transaction.
+                    </p>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">
+                                <i class="bi bi-cash-coin"></i> Deposit Amount *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="amount" 
+                                       name="amount" 
+                                       placeholder="0.00" 
+                                       min="0.01" 
+                                       step="0.01" 
+                                       required
+                                       value="{{ request.form.get('amount', '') }}">
+                            </div>
+                            <div class="form-text">Enter the amount you want to deposit</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-text-left"></i> Description (Optional)
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="description" 
+                                   name="description" 
+                                   placeholder="e.g., Salary deposit, Gift, etc."
+                                   maxlength="100"
+                                   value="{{ request.form.get('description', '') }}">
+                            <div class="form-text">Add a note to remember this transaction</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-lock"></i> Password *
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter your account password" 
+                                   required>
+                            <div class="form-text">Required to authorize the deposit</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Complete Deposit
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Information Card -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-info-circle text-info"></i> Deposit Information
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-check"></i> Deposits are processed immediately
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-check"></i> All transactions are recorded in your history
+                        </li>
+                        <li class="small text-muted mb-1">
+                            <i class="bi bi-check"></i> Minimum deposit amount is $0.01
+                        </li>
+                        <li class="small text-muted">
+                            <i class="bi bi-check"></i> Your password is required for security
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Format amount input as currency
+    document.getElementById('amount').addEventListener('input', function() {
+        let value = parseFloat(this.value);
+        if (!isNaN(value) && value > 0) {
+            // Optional: Add visual feedback for valid amount
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value !== '') {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+        }
+    });
+    
+    // Focus on amount field when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('amount').focus();
+    });
+</script>
+{% endblock %}
