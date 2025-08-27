@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Withdraw - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Page Header -->
+            <div class="text-center mb-4">
+                <h2 class="text-warning">
+                    <i class="bi bi-dash-circle me-2"></i>Make a Withdrawal
+                </h2>
+                <p class="text-muted">Withdraw money from your account</p>
+            </div>
+
+            <!-- Withdrawal Form -->
+            <div class="card shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cash me-2"></i>Withdraw Funds
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('withdraw') }}" id="withdrawForm">
+                        <div class="mb-4">
+                            <label for="amount" class="form-label">
+                                <i class="bi bi-currency-dollar me-1"></i>Amount to Withdraw
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </span>
+                                <input type="number" 
+                                       class="form-control form-control-lg" 
+                                       id="amount" 
+                                       name="amount" 
+                                       placeholder="0.00"
+                                       min="0.01"
+                                       step="0.01"
+                                       required
+                                       autocomplete="off">
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>Enter the amount you want to withdraw.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-chat-text me-1"></i>Description (Optional)
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="description" 
+                                   name="description" 
+                                   placeholder="e.g., ATM withdrawal, Cash for expenses, etc."
+                                   maxlength="100">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>Add a note for your records.
+                            </div>
+                        </div>
+                        
+                        <!-- Withdrawal Summary -->
+                        <div class="alert alert-light border" id="withdrawSummary" style="display: none;">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-receipt me-2"></i>Withdrawal Summary
+                            </h6>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Withdrawal Amount:</strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span id="summaryAmount" class="text-warning">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg" id="submitBtn">
+                                <i class="bi bi-check-circle me-2"></i>Confirm Withdrawal
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="card mt-3 border-warning">
+                <div class="card-body text-center">
+                    <h6 class="text-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Important Notice
+                    </h6>
+                    <small class="text-muted">
+                        Please ensure you have sufficient balance before making a withdrawal. 
+                        Overdraft fees may apply if your account goes below zero.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Quick Amount Buttons -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-lightning me-2"></i>Quick Amounts
+                    </h6>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="setAmount(20)">$20</button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="setAmount(50)">$50</button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="setAmount(100)">$100</button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="setAmount(200)">$200</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-focus on amount field
+    document.getElementById('amount').focus();
+    
+    // Real-time amount validation and summary update
+    const amountField = document.getElementById('amount');
+    const descriptionField = document.getElementById('description');
+    const withdrawSummary = document.getElementById('withdrawSummary');
+    const summaryAmount = document.getElementById('summaryAmount');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    function updateSummary() {
+        const amount = parseFloat(amountField.value) || 0;
+        
+        if (amount > 0) {
+            summaryAmount.textContent = '$' + amount.toFixed(2);
+            withdrawSummary.style.display = 'block';
+        } else {
+            withdrawSummary.style.display = 'none';
+        }
+    }
+    
+    function setAmount(value) {
+        amountField.value = value.toFixed(2);
+        updateSummary();
+        amountField.focus();
+    }
+    
+    amountField.addEventListener('input', updateSummary);
+    
+    // Form validation
+    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+        const amount = parseFloat(amountField.value) || 0;
+        
+        if (amount <= 0) {
+            e.preventDefault();
+            alert('Please enter a valid withdrawal amount greater than $0.00');
+            amountField.focus();
+            return false;
+        }
+        
+        if (amount > 10000) {
+            e.preventDefault();
+            alert('Withdrawal amount cannot exceed $10,000.00 per transaction');
+            amountField.focus();
+            return false;
+        }
+        
+        // Confirm large withdrawals
+        if (amount > 1000) {
+            if (!confirm(`Are you sure you want to withdraw $${amount.toFixed(2)}?`)) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        
+        // Disable submit button to prevent double submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing Withdrawal...';
+    });
+
+    // Format amount input
+    amountField.addEventListener('blur', function() {
+        const amount = parseFloat(this.value) || 0;
+        if (amount > 0) {
+            this.value = amount.toFixed(2);
+        }
+    });
+
+    // Auto-fill common descriptions
+    const commonDescriptions = [
+        'ATM withdrawal',
+        'Cash for expenses',
+        'Emergency fund',
+        'Bill payment',
+        'Shopping money',
+        'Travel expenses'
+    ];
+
+    descriptionField.addEventListener('focus', function() {
+        if (!this.value) {
+            // You could implement a dropdown here for common descriptions
+        }
+    });
+</script>
+{% endblock %}

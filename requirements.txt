@@ -1,12 +1,14 @@
 # Dummy Bank Application Requirements
 
-# No external dependencies required
-# The application uses only Python standard library modules:
+# Core banking system uses only Python standard library modules:
 # - json (for data persistence)
 # - os (for file system operations)
 # - hashlib (for password hashing)
 # - datetime (for timestamps)
 # - tempfile (for testing)
 # - unittest (for test suite)
+
+# Web interface dependencies:
+Flask>=2.0.0
 
 # Python 3.6+ required

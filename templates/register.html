@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-plus me-2"></i>Create New Account
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('register') }}" id="registrationForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-person me-1"></i>Full Name
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="name" 
+                                   name="name" 
+                                   placeholder="Enter your full name"
+                                   required
+                                   autocomplete="name">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-key me-1"></i>Password
+                            </label>
+                            <input type="password" 
+                                   class="form-control form-control-lg" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter a secure password"
+                                   required
+                                   minlength="4"
+                                   autocomplete="new-password">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>Choose a strong password to keep your account secure.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">
+                                <i class="bi bi-key-fill me-1"></i>Confirm Password
+                            </label>
+                            <input type="password" 
+                                   class="form-control form-control-lg" 
+                                   id="confirm_password" 
+                                   name="confirm_password" 
+                                   placeholder="Confirm your password"
+                                   required
+                                   autocomplete="new-password">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="initial_deposit" class="form-label">
+                                <i class="bi bi-cash-stack me-1"></i>Initial Deposit (Optional)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" 
+                                       class="form-control form-control-lg" 
+                                       id="initial_deposit" 
+                                       name="initial_deposit" 
+                                       placeholder="0.00"
+                                       min="0"
+                                       step="0.01"
+                                       value="0">
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>You can add money to your account after registration.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="bi bi-person-check me-2"></i>Create Account
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="text-muted mb-2">Already have an account?</p>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Login Here
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terms Notice -->
+            <div class="card mt-3 border-info">
+                <div class="card-body text-center">
+                    <h6 class="text-info">
+                        <i class="bi bi-file-text me-2"></i>Account Terms
+                    </h6>
+                    <small class="text-muted">
+                        By creating an account, you agree to our terms of service. 
+                        This is a demonstration banking system for educational purposes only.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-focus on name field
+    document.getElementById('name').focus();
+    
+    // Real-time password confirmation validation
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    function validatePasswords() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+            confirmPassword.classList.add('is-invalid');
+            confirmPassword.classList.remove('is-valid');
+        } else {
+            confirmPassword.setCustomValidity('');
+            confirmPassword.classList.remove('is-invalid');
+            confirmPassword.classList.add('is-valid');
+        }
+    }
+    
+    password.addEventListener('input', validatePasswords);
+    confirmPassword.addEventListener('input', validatePasswords);
+    
+    // Form validation
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const name = document.getElementById('name').value.trim();
+        const pwd = password.value.trim();
+        const confirmPwd = confirmPassword.value.trim();
+        const deposit = document.getElementById('initial_deposit').value;
+        
+        if (!name || !pwd) {
+            e.preventDefault();
+            alert('Name and password are required.');
+            return false;
+        }
+        
+        if (pwd !== confirmPwd) {
+            e.preventDefault();
+            alert('Passwords do not match.');
+            return false;
+        }
+        
+        if (deposit && parseFloat(deposit) < 0) {
+            e.preventDefault();
+            alert('Initial deposit cannot be negative.');
+            return false;
+        }
+        
+        // Disable submit button to prevent double submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Creating Account...';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Deposit - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Page Header -->
+            <div class="text-center mb-4">
+                <h2 class="text-success">
+                    <i class="bi bi-plus-circle me-2"></i>Make a Deposit
+                </h2>
+                <p class="text-muted">Add money to your account securely</p>
+            </div>
+
+            <!-- Deposit Form -->
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cash-stack me-2"></i>Deposit Funds
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('deposit') }}" id="depositForm">
+                        <div class="mb-4">
+                            <label for="amount" class="form-label">
+                                <i class="bi bi-currency-dollar me-1"></i>Amount to Deposit
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </span>
+                                <input type="number" 
+                                       class="form-control form-control-lg" 
+                                       id="amount" 
+                                       name="amount" 
+                                       placeholder="0.00"
+                                       min="0.01"
+                                       step="0.01"
+                                       required
+                                       autocomplete="off">
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>Enter the amount you want to deposit.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-chat-text me-1"></i>Description (Optional)
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="description" 
+                                   name="description" 
+                                   placeholder="e.g., Salary deposit, Gift money, etc."
+                                   maxlength="100">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>Add a note for your records.
+                            </div>
+                        </div>
+                        
+                        <!-- Deposit Summary -->
+                        <div class="alert alert-light border" id="depositSummary" style="display: none;">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-receipt me-2"></i>Deposit Summary
+                            </h6>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Deposit Amount:</strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span id="summaryAmount" class="text-success">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="bi bi-check-circle me-2"></i>Confirm Deposit
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="card mt-3 border-success">
+                <div class="card-body text-center">
+                    <h6 class="text-success">
+                        <i class="bi bi-shield-check me-2"></i>Secure Deposit
+                    </h6>
+                    <small class="text-muted">
+                        Your deposit is processed instantly and securely. 
+                        All transactions are encrypted and logged for your protection.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-focus on amount field
+    document.getElementById('amount').focus();
+    
+    // Real-time amount validation and summary update
+    const amountField = document.getElementById('amount');
+    const descriptionField = document.getElementById('description');
+    const depositSummary = document.getElementById('depositSummary');
+    const summaryAmount = document.getElementById('summaryAmount');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    function updateSummary() {
+        const amount = parseFloat(amountField.value) || 0;
+        
+        if (amount > 0) {
+            summaryAmount.textContent = '$' + amount.toFixed(2);
+            depositSummary.style.display = 'block';
+        } else {
+            depositSummary.style.display = 'none';
+        }
+    }
+    
+    amountField.addEventListener('input', updateSummary);
+    
+    // Form validation
+    document.getElementById('depositForm').addEventListener('submit', function(e) {
+        const amount = parseFloat(amountField.value) || 0;
+        
+        if (amount <= 0) {
+            e.preventDefault();
+            alert('Please enter a valid deposit amount greater than $0.00');
+            amountField.focus();
+            return false;
+        }
+        
+        if (amount > 1000000) {
+            e.preventDefault();
+            alert('Deposit amount cannot exceed $1,000,000.00');
+            amountField.focus();
+            return false;
+        }
+        
+        // Confirm large deposits
+        if (amount > 10000) {
+            if (!confirm(`Are you sure you want to deposit $${amount.toFixed(2)}?`)) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        
+        // Disable submit button to prevent double submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing Deposit...';
+    });
+
+    // Format amount input
+    amountField.addEventListener('blur', function() {
+        const amount = parseFloat(this.value) || 0;
+        if (amount > 0) {
+            this.value = amount.toFixed(2);
+        }
+    });
+
+    // Auto-fill common descriptions
+    const commonDescriptions = [
+        'Salary deposit',
+        'Cash deposit',
+        'Check deposit',
+        'Transfer from savings',
+        'Gift money',
+        'Refund',
+        'Business income'
+    ];
+
+    descriptionField.addEventListener('focus', function() {
+        if (!this.value) {
+            // You could implement a dropdown here for common descriptions
+        }
+    });
+</script>
+{% endblock %}

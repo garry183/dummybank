@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient-primary text-white">
+                <div class="card-body">
+                    <h3 class="mb-1">
+                        <i class="bi bi-person-circle me-2"></i>Welcome, {{ account_info.name }}!
+                    </h3>
+                    <p class="mb-0">Account #{{ account_info.account_number }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Balance and Quick Actions -->
+    <div class="row mb-4">
+        <!-- Account Balance -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-wallet2 me-2"></i>Account Balance
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2 class="text-success mb-0">
+                                <i class="bi bi-currency-dollar"></i>{{ "%.2f"|format(account_info.balance) }}
+                            </h2>
+                            <p class="text-muted mb-0">Current Available Balance</p>
+                        </div>
+                        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i>Account Created: 
+                                {{ account_info.created_date.split('T')[0] }}
+                            </small><br>
+                            <span class="badge bg-success mt-1">
+                                <i class="bi bi-check-circle me-1"></i>{{ account_info.status|title }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('deposit') }}" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-2"></i>Deposit
+                        </a>
+                        <a href="{{ url_for('withdraw') }}" class="btn btn-warning">
+                            <i class="bi bi-dash-circle me-2"></i>Withdraw
+                        </a>
+                        <a href="{{ url_for('transfer') }}" class="btn btn-info">
+                            <i class="bi bi-arrow-left-right me-2"></i>Transfer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Recent Transactions
+                    </h5>
+                    <a href="{{ url_for('transactions') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-list-ul me-1"></i>View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_transactions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th class="text-end">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for transaction in recent_transactions %}
+                                    <tr>
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ transaction.date }}<br>
+                                                {{ transaction.timestamp.split('T')[1].split('.')[0] }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            {% if transaction.transaction_type == 'deposit' %}
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-plus-circle me-1"></i>Deposit
+                                                </span>
+                                            {% elif transaction.transaction_type == 'withdrawal' %}
+                                                <span class="badge bg-warning">
+                                                    <i class="bi bi-dash-circle me-1"></i>Withdrawal
+                                                </span>
+                                            {% elif transaction.transaction_type == 'transfer_in' %}
+                                                <span class="badge bg-info">
+                                                    <i class="bi bi-arrow-down-circle me-1"></i>Transfer In
+                                                </span>
+                                            {% elif transaction.transaction_type == 'transfer_out' %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="bi bi-arrow-up-circle me-1"></i>Transfer Out
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-light text-dark">
+                                                    {{ transaction.transaction_type|title }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ transaction.description }}</td>
+                                        <td class="text-end">
+                                            <strong class="{{ 'text-success' if transaction.transaction_type in ['deposit', 'transfer_in'] else 'text-danger' }}">
+                                                {{ '+' if transaction.transaction_type in ['deposit', 'transfer_in'] else '-' }}${{ "%.2f"|format(transaction.amount) }}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-inbox display-4 d-block mb-3"></i>
+                            <h6>No Recent Transactions</h6>
+                            <p>Your transaction history will appear here once you start using your account.</p>
+                            <a href="{{ url_for('deposit') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Make First Deposit
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-refresh balance every 60 seconds (for demo purposes)
+    setTimeout(function() {
+        location.reload();
+    }, 60000);
+</script>
+{% endblock %}

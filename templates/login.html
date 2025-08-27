@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Dummy Bank{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-check me-2"></i>Login to Your Account
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('login') }}">
+                        <div class="mb-3">
+                            <label for="account_number" class="form-label">
+                                <i class="bi bi-hash me-1"></i>Account Number
+                            </label>
+                            <input type="text" 
+                                   class="form-control form-control-lg" 
+                                   id="account_number" 
+                                   name="account_number" 
+                                   placeholder="Enter your account number"
+                                   required
+                                   autocomplete="username">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-key me-1"></i>Password
+                            </label>
+                            <input type="password" 
+                                   class="form-control form-control-lg" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Enter your password"
+                                   required
+                                   autocomplete="current-password">
+                        </div>
+                        
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="text-muted mb-2">Don't have an account?</p>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-person-plus me-2"></i>Create New Account
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Notice -->
+            <div class="card mt-3 border-success">
+                <div class="card-body text-center">
+                    <h6 class="text-success">
+                        <i class="bi bi-shield-check me-2"></i>Security Notice
+                    </h6>
+                    <small class="text-muted">
+                        Your login information is encrypted and secure. 
+                        Never share your account details with anyone.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-focus on account number field
+    document.getElementById('account_number').focus();
+    
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const accountNumber = document.getElementById('account_number').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (!accountNumber || !password) {
+            e.preventDefault();
+            alert('Please enter both account number and password.');
+            return false;
+        }
+    });
+</script>
+{% endblock %}
