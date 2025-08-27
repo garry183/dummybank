@@ -193,7 +193,7 @@ def transfer():
             if 'error' in result:
                 flash(f'Transfer failed: {result["error"]}', 'error')
             else:
-                flash(f'Successfully transferred ${amount:.2f} to account {to_account}. New balance: ${result["new_balance"]:.2f}', 'success')
+                flash(f'Successfully transferred ${amount:.2f} to account {to_account}. New balance: ${result["from_new_balance"]:.2f}', 'success')
                 return redirect(url_for('dashboard'))
         except ValueError:
             flash('Invalid amount entered.', 'error')
